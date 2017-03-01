@@ -19,8 +19,7 @@ contract('NumberStore', accounts => {
         return NumberStore.new({ from: user1 })
             .then(created => {
                 instance = created;
-            })
-
+            });
     });
 
     it("should have 1 on construction", () => {
@@ -53,12 +52,21 @@ contract('NumberStore', accounts => {
             });
     });
 
-    it("should return 0 after kill", () => {
+    it("should only emit event before selfdestruct", () => {
         return instance.kill({ from: user1, gas: 3000000 })
             .then(txInfo => {
                 assert.isBelow(txInfo.receipt.gasUsed, 3000000, "should not have used all the gas");
-                return web3.eth.getCodePromise(instance.address);
-            })
+                assert.strictEqual(txInfo.logs.length, 1, "should only emit the first event");
+                assert.strictEqual(
+                    txInfo.logs[0].event,
+                    "LogBeforeKilled",
+                    "should have the event right before killed");
+            });        
+    });
+
+    it("should return 0 after kill", () => {
+        return instance.kill({ from: user1, gas: 3000000 })
+            .then(txInfo => web3.eth.getCodePromise(instance.address))
             .then(code => {
                 assert.strictEqual(code.length, 3, "should no longer have any code");
                 return instance.number();
