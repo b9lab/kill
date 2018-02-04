@@ -1,10 +1,10 @@
-var NumberStore = artifacts.require("./NumberStore.sol");
+const NumberStore = artifacts.require("./NumberStore.sol");
 const Extensions = require("../utils/extensions.js");
 Extensions.init(web3, assert);
 
 contract('NumberStore', accounts => {
 
-    var user1;
+    let user1;
 
     before("should prepare accounts", () => {
         assert.isAtLeast(accounts.length, 1, "should have at least 1 account");
@@ -13,7 +13,7 @@ contract('NumberStore', accounts => {
             .then(() => Extensions.makeSureHasAtLeast(user1, [ user1 ], web3.toWei(0.5)));
     });
 
-    var instance;
+    let instance;
 
     beforeEach("should deploy a new instance", () => {
         return NumberStore.new({ from: user1 })

@@ -1,8 +1,8 @@
-var ValueStoreTest = artifacts.require("../test/ValueStoreTest.sol");
+const ValueStoreTest = artifacts.require("../test/ValueStoreTest.sol");
 const Extensions = require("../utils/extensions.js");
 Extensions.init(web3, assert);
 
-var accounts, user1;
+let accounts, user1;
 
 before("should prepare accounts", () => {
     return web3.eth.getAccountsPromise()
