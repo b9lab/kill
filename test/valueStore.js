@@ -1,6 +1,11 @@
+const Promise = require("bluebird");
 const ValueStoreTest = artifacts.require("../test/ValueStoreTest.sol");
-const Extensions = require("../utils/extensions.js");
-Extensions.init(web3, assert);
+web3.eth.makeSureAreUnlocked = require("../utils/makeSureAreUnlocked.js");
+web3.eth.makeSureHasAtLeast = require("../utils/makeSureHasAtLeast.js");
+
+if (typeof web3.eth.getAccountsPromise !== "function") {
+    Promise.promisifyAll(web3.eth, { suffix: "Promise" });
+}
 
 let accounts, user1;
 
@@ -10,9 +15,9 @@ before("should prepare accounts", () => {
             accounts = _accounts;
             assert.isAtLeast(accounts.length, 1, "should have at least 1 account");
             user1 = accounts[0];
-            return Extensions.makeSureAreUnlocked([ user1 ]);
+            return web3.eth.makeSureAreUnlocked([ user1 ]);
         })
-        .then(() => Extensions.makeSureHasAtLeast(user1, [ user1 ], web3.toWei(0.5)));
+        .then(() => web3.eth.makeSureHasAtLeast(user1, [ user1 ], web3.toWei(0.5)));
 });
 
 describe('ValueStore', () => {

@@ -1,6 +1,6 @@
 const NumberStore = artifacts.require("./NumberStore.sol");
-const Extensions = require("../utils/extensions.js");
-Extensions.init(web3, assert);
+web3.eth.makeSureAreUnlocked = require("../utils/makeSureAreUnlocked.js");
+web3.eth.makeSureHasAtLeast = require("../utils/makeSureHasAtLeast.js");
 
 contract('NumberStore', accounts => {
 
@@ -9,8 +9,8 @@ contract('NumberStore', accounts => {
     before("should prepare accounts", () => {
         assert.isAtLeast(accounts.length, 1, "should have at least 1 account");
         user1 = accounts[0];
-        return Extensions.makeSureAreUnlocked([ user1 ])
-            .then(() => Extensions.makeSureHasAtLeast(user1, [ user1 ], web3.toWei(0.5)));
+        return web3.eth.makeSureAreUnlocked([ user1 ])
+            .then(() => web3.eth.makeSureHasAtLeast(user1, [ user1 ], web3.toWei(0.5)));
     });
 
     let instance;
